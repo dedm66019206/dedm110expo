@@ -1,0 +1,139 @@
+@charset "utf-8";
+/* CSS Document */
+html {
+	overflow-x: hidden;
+/*   IE and Edge*/
+  -ms-overflow-style: none;
+/*   Firefox*/
+  scrollbar-width: none;
+/*   Chrome, Safari*/
+  
+}
+html::-webkit-scrollbar {
+    display: none;
+  }
+.copywriting{
+	font-size: 1em;
+}
+.cw1{
+	top: 45%;
+	left: 36%;
+}
+.cw2{
+	top: 53%;
+	left: 25%;
+}
+.cw3{
+	top: 20%;
+	left: 20%;
+	padding-left: 60px;
+	padding-right: 60px;
+}
+.cw4{
+	top: 30%;
+	left: 15%;
+	
+}
+.cw5{
+	top: 35%;
+	right: 0%;
+}
+.cw6{
+	top: 45%;
+	right: 0%;
+	padding-right: 0;
+	margin-right: -5px;
+}
+.concept{
+	position: relative;
+	top: 70px;
+	margin-left: 18%;
+	display: inline-block;
+	color: #f0f0f0;
+	font-size: 1.1vmax;
+	font-style:italic;
+	padding: 20px 20px 0px;
+	background-color: rgba(255, 255, 255, 0.4);
+}
+.fbmove{
+	position: relative;
+	display: inline-block;
+	margin-left: 5%;
+	border: 0.5vmax solid;
+	padding: 10px;
+	border-image: linear-gradient(155deg, #4903ec23 0%, #0213fa 100%) 1 round;
+}
+
+.r1,.r2,.r3,.r4,.r5,.r6{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.r1,.r4,.r6{
+	padding-left: 20px;
+}
+.section3{
+	margin-top: 50px;
+	margin-bottom: 150px;
+	text-align: center;
+}
+.t2{
+	text-align: right;
+	position: absolute;
+	margin: 0;
+	display: inline-block;
+	right: 10%;
+	top: 5%;
+}
+.advisorcontainer{
+	position: relative;
+	/* left: 25%; */
+	margin-top: 10%;
+}
+.advisor{
+	padding: 30px;
+	/* border: 1px solid red; */
+	position: relative;
+	display: inline-block;
+	color: #f0f0f0;
+}
+.tpic{
+	width: 150px;
+}
+
+
+/* footer */
+.footer{
+	display: none;
+    box-sizing: border-box;
+    /* position: absolute; */
+    bottom: 0;
+	width: 100%;
+}
+.m2{
+	position: absolute;
+	top: 50%;
+	bottom: 0;
+	transform: rotate(15deg);
+}
+.adbottom{
+	vertical-align: middle;
+}
+.tname{
+	padding-top: 15px;
+	text-align-last: left;
+}
+.tline{
+	display: inline-block;
+	width: 70px;
+	height: 1.5px;
+	background-color: rgba(240, 240, 240, 0.7);
+}
+.teamname{
+	display: inline-block;
+	padding-top: 15px;
+	font-weight: 300;
+	font-size: 10px;
+}
+.tl2{
+	background-color: #ffffff00;
+}
