@@ -8,7 +8,9 @@ html,body{
 	overflow-x: hidden;
 	font-family: 'Noto Sans TC','Helvetica','Arial','微軟正黑體';
 }
-
+html{
+	scroll-behavior: smooth;
+}
 body{
 	background-color: #090947;
 }
@@ -482,4 +484,109 @@ p.position{
 	outline: none; /* Remove outline */
 	cursor: pointer; /* Add a mouse pointer on hover */
 	background-color: rgba(255, 255, 255, 0);
+  }
+
+  /* device */
+  #oNone{
+	  display: none;
+  }
+  #o_bg {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	background: #090947;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+  }
+  
+  .o_content {
+	position: absolute;
+	width: 99%;
+	height: 90%;
+	/*border:1px solid white;*/
+  }
+  
+  .o_content_top {
+	position: absolute;
+	width: 100%;
+	height: 70%;
+	top: 0;
+	/*border:1px solid white;*/
+  }
+  
+  @media screen and (max-width: 600px) {
+	.o_content_top {
+	  top: 10%;
+	  height: 50%;
+	}
+  }
+  @media screen and (max-width: 300px) {
+	.o_content_top {
+	  top: 20%;
+	  height: 40%;
+	}
+  }
+  .o_content_bottom {
+	position: absolute;
+	width: 100%;
+	height: 30%;
+	top: 70%;
+	color: #edf0f4;
+	text-align: center;
+	line-height: 1.5;
+	letter-spacing: 0.5vh;
+	font-size: 2.5vh;
+	font-family: "Monda", "Noto Sans TC";
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/*border:1px solid green;*/
+  }
+  
+  @media screen and (max-width: 900px) {
+	.o_content_bottom {
+	  font-size: 2.5vh;
+	}
+  }
+  @media screen and (max-width: 600px) {
+	.o_content_bottom {
+	  top: 60%;
+	  font-size: 2vh;
+	}
+  }
+  .o_person,
+  .o_title {
+	position: absolute;
+	width: auto;
+	left: 50%;
+	transform: translate(-50%);
+  }
+  
+  .o_person {
+	height: 140%;
+	top: -20%;
+  }
+  
+  .o_title {
+	height: 35%;
+	top: 52%;
+  }
+  
+  .o_word {
+	position: absolute;
+	width: 100%;
+	top: 72.5%;
+	left: 50%;
+	transform: translate(-50%) rotate(-10deg);
+	color: #edf0f4;
+	font-family: "Monda";
+	letter-spacing: 0.35vh;
+	text-align: center;
+	text-shadow: 0.1em 0.1em #bb33d5;
   }
