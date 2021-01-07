@@ -8,7 +8,6 @@ $(document).ready(function () {
  window.onload = function(){
     var oRandomC = document.getElementById('randomChange');
     var oRandomH4 = document.getElementsByClassName('loading_word')[0];
-  
     var timer = null;
     var timer = null;
        var word15Arr = [
@@ -34,10 +33,6 @@ $(document).ready(function () {
       return Math.random()>.5 ? -1 : 1;
       //用Math.random()函式生成0~1之間的隨機數與0.5比較，返回-1或1
     }
-    function topFunction() {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
     function gtp(){
         //Get the button:
         mybutton = document.getElementById("myBtn");
@@ -52,12 +47,39 @@ $(document).ready(function () {
         }
     
         // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+    
         
     
     }
     
     box();    
-  }
+
+    var oNone = document.getElementById('oNone');
+    var Width = document.documentElement.clientWidth;
+
+    //螢幕過小，限制觀看
+    if(Width < 1366){
+        document.body.overflowY = 'hidden'; 
+        oNone.style.display = 'block';
+      }else{
+        document.documentElement.style.overflowY = 'scroll'; 
+        oNone.style.display = 'none';
+      }
+      window.onresize = function(){
+        Width = document.documentElement.clientWidth;
+        if(Width < 1366){
+          document.documentElement.style.overflowY = 'hidden'; 
+          oNone.style.display = 'block';
+        }else{
+          document.documentElement.style.overflowY = 'scroll'; 
+          oNone.style.display = 'none';
+        }
+      }
+}
 
 
 
