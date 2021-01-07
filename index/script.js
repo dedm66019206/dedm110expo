@@ -39,6 +39,30 @@ window.onload = function(){
   team();
   modal();
   YTlazyload();
+
+  var oNone = document.getElementById('oNone');
+    var Width = document.documentElement.clientWidth;
+
+    //螢幕過小，限制觀看
+    if(Width < 1366){
+        document.body.overflowY = 'hidden'; 
+        oNone.style.display = 'block';
+      }else{
+        document.documentElement.style.overflowY = 'scroll'; 
+        oNone.style.display = 'none';
+      }
+      window.onresize = function(){
+        Width = document.documentElement.clientWidth;
+        if(Width < 1366){
+          document.documentElement.style.overflowY = 'hidden'; 
+          oNone.style.display = 'block';
+        }else{
+          document.documentElement.style.overflowY = 'scroll'; 
+          oNone.style.display = 'none';
+        }
+      }
+
+
 }
 
 
