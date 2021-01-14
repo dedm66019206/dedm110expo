@@ -63,8 +63,8 @@ $(document).ready(function () {
 
     //螢幕過小，限制觀看
     if(Width < 1366){
-        document.body.overflowY = 'hidden'; 
-        oNone.style.display = 'block';
+        document.documentElement.style.overflowY = 'hidden'; 
+        oNone.style.display = 'fixed';
       }else{
         document.documentElement.style.overflowY = 'scroll'; 
         oNone.style.display = 'none';
@@ -73,7 +73,7 @@ $(document).ready(function () {
         Width = document.documentElement.clientWidth;
         if(Width < 1366){
           document.documentElement.style.overflowY = 'hidden'; 
-          oNone.style.display = 'block';
+          oNone.style.display = 'fixed';
         }else{
           document.documentElement.style.overflowY = 'scroll'; 
           oNone.style.display = 'none';
