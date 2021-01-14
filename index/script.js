@@ -45,7 +45,7 @@ window.onload = function(){
 
     //螢幕過小，限制觀看
     if(Width < 1366){
-        document.body.overflowY = 'hidden'; 
+        document.documentElement.style.overflowY = 'hidden'; 
         oNone.style.display = 'fixed';
       }else{
         document.documentElement.style.overflowY = 'scroll'; 
