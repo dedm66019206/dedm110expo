@@ -41,12 +41,12 @@ window.onload = function(){
   YTlazyload();
 
   var oNone = document.getElementById('oNone');
-    var Width = document.documentElement.clientWidth;
+  var Width = document.documentElement.clientWidth;
 
     //螢幕過小，限制觀看
     if(Width < 1366){
-        document.documentElement.style.overflowY = 'hidden'; 
-        oNone.style.display = 'fixed';
+        document.body.overflowY = 'hidden'; 
+        oNone.style.display = 'block';
       }else{
         document.documentElement.style.overflowY = 'scroll'; 
         oNone.style.display = 'none';
@@ -55,7 +55,7 @@ window.onload = function(){
         Width = document.documentElement.clientWidth;
         if(Width < 1366){
           document.documentElement.style.overflowY = 'hidden'; 
-          oNone.style.display = 'fixed';
+          oNone.style.display = 'block';
         }else{
           document.documentElement.style.overflowY = 'scroll'; 
           oNone.style.display = 'none';
