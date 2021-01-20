@@ -44,7 +44,7 @@ a {
 /* 螢幕限制觀看 */
 #o_bg {
 	z-index: 999;
-	position: absolute;
+	position: fixed;
 	width: 100vw;
 	height: 100vh;
 	top: 0;
@@ -82,7 +82,7 @@ a {
   @media screen and (max-width: 300px) {
 	.o_content_top {
 	  top: 20%;
-	  height: 40%;
+	  height: 30%;
 	}
   }
   .o_content_bottom {
