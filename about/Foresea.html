@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="在Foresea裡，一切都是For the Sea。這是 一款PC解謎遊戲，玩家將透過關卡認識各種海洋議題，化身為不同的角色，採取對海洋有善的行動，一步步拯救地球。">
+    <meta name="author" content="嘉義大學數位學習設計與管理系110級畢籌會">
+    <meta property="og:image" content="./img/VI/Foresea_VI.jpg" />
+    <title>Foresea | 嘉義大學數位系110級畢業展覽</title>
+    <link rel="icon" href="https://dedm66019206.github.io/dedm110expo/index/favicon.ico">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@1,700&amp;family=Noto+Sans+TC:wght@400;700&amp;display=swap">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./rwd.css">
+    <link rel="stylesheet" href="./css/yt-lazyload.min.css">
+</head>
+
+<body>
+    <div class="loading_wrapper">
+        <div class="loading_tetris">
+            <div class="loading_block lb2"></div>
+            <div class="loading_block lb2"></div>
+            <div class="loading_block lb3"></div>
+            <div class="loading_block lb4"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb5"></div>
+            <div class="loading_block lb6"></div>
+            <div class="loading_block lb7"></div>
+            <div class="loading_block lb8"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb9"></div>
+            <div class="loading_block lb10"></div>
+            <div class="loading_block lb11"></div>
+            <div class="loading_block lb12"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb13"></div>
+            <div class="loading_block lb14"></div>
+            <div class="loading_block lb15"></div>
+            <div class="loading_block lb16"></div>
+        </div>
+    </div>
+    <div id="bg">
+        
+        <main role="main" class="main-content">
+            <canvas id="noise" class="noise"></canvas>
+            <img src="./img/web_bg_new.jpg" class="imgg">
+            <div id="box">
+                <canvas id="canvas"></canvas>
+                <script id="vertex-shader" type="x-shader/x-vertex">
+                    varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+                </script>
+            </div>
+        </main>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+            varying vec2 vUv;
+            uniform float delta;
+            uniform float detail;
+            uniform vec2 resolution;
+            // Classic Perlin 3D Noise
+            // by Stefan Gustavson
+            //
+            vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+            vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+            vec3 fade(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+            
+            float cnoise(vec3 P){
+            vec3 Pi0 = floor(P); // Integer part for indexing
+            vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+            Pi0 = mod(Pi0, 289.0);
+            Pi1 = mod(Pi1, 289.0);
+            vec3 Pf0 = fract(P); // Fractional part for interpolation
+            vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+            vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+            vec4 iy = vec4(Pi0.yy, Pi1.yy);
+            vec4 iz0 = Pi0.zzzz;
+            vec4 iz1 = Pi1.zzzz;
+            
+            vec4 ixy = permute(permute(ix) + iy);
+            vec4 ixy0 = permute(ixy + iz0);
+            vec4 ixy1 = permute(ixy + iz1);
+            
+            vec4 gx0 = ixy0 / 7.0;
+            vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
+            gx0 = fract(gx0);
+            vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+            vec4 sz0 = step(gz0, vec4(0.0));
+            gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+            gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+            
+            vec4 gx1 = ixy1 / 7.0;
+            vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
+            gx1 = fract(gx1);
+            vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+            vec4 sz1 = step(gz1, vec4(0.0));
+            gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+            gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+            
+            vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+            vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+            vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+            vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+            vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+            vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+            vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+            vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+            
+            vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+            g000 *= norm0.x;
+            g010 *= norm0.y;
+            g100 *= norm0.z;
+            g110 *= norm0.w;
+            vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+            g001 *= norm1.x;
+            g011 *= norm1.y;
+            g101 *= norm1.z;
+            g111 *= norm1.w;
+            
+            float n000 = dot(g000, Pf0);
+            float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+            float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+            float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+            float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+            float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+            float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+            float n111 = dot(g111, Pf1);
+            
+            vec3 fade_xyz = fade(Pf0);
+            vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+            vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+            float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+            return 2.2 * n_xyz;
+            }
+            
+            
+            //調整顏色
+            vec4 color1 = vec4(190.0, 197.0, 120.0, 255.0) / 255.0; //黃
+            vec4 color2 = vec4(15.0, 21.0, 115.0, 255.0) / 255.0; //深藍
+            vec4 color3 = vec4(36.0, 46.0, 193.0, 255.0) / 255.0; //淺藍
+            vec4 color4 = vec4(148.0, 96.0, 220.0, 255.0) / 255.0; //淺粉
+            vec4 color5 = vec4(212.0, 158.0, 244.0, 255.0) / 255.0; //深紫
+            void main() {
+            float delta = delta * 0.00003; //調整流動速度 越小越慢
+            float noise = abs(cnoise(vec3(vUv*2.0, delta+(detail * 0.5))));
+            vec4 color = color5;
+            if (noise > 0.96) {
+            color = color1;
+            if (mod(floor(vUv.y*50.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.68) {
+            color = color2;
+            if (mod(floor(vUv.x*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.32) {
+            color = color3;
+            if (mod(floor(vUv.x*70.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.12) {
+            color = color4;
+            if (mod(floor(vUv.x*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else {
+            color = color5;
+            if (mod(floor(vUv.y*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            }
+            gl_FragColor = color;
+            }
+            </script>
+    </div>
+    <div id="main_content">
+        <img src="./img/logo_top.svg" alt="獨新數" id="main_logo">
+        <div class="info_all info_foresea">
+            <div id="info_content" >
+                <div id="info_top">
+                    <div id="info_tag">#動態影像與動畫&emsp;#遊戲設計&emsp;#網頁設計&emsp;</div>
+                    <div id="info_title">Foresea</div>
+                    <div id="info_member"><br>組員：臧亭雲、洪嬿珊、黃綉雯、黃丞榆<br>指導教授：劉漢欽</div>
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">在Foresea，一切都是 for the sea。</div>
+                    <div class="info_word">
+                        「Foresea」是一款關於認識海洋議題的電腦單機遊戲，藉由闖關的方式引領使用者認識與學習當前重要的海洋議題。
+                    </div>
+                    <div class="info_word">
+                        「Foresea」此主題名稱由英文字「Foresee 預見」發想而來，當預見了最糟的情況，我們會怎麼做呢？
+                    </div>
+                    <div class="info_word">
+                        故事背景設定在西元2121年，人類長期不重視海洋生態的結果，導致海水變得混濁不堪，地球盎然的生機已不存在。Foresea中，玩家將化身為不同的角色，採取對海洋友善的行動，一步步拯救地球。
+                    </div>
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">創作理念</div>
+                    <img src="./img/mock_up/Foresea_01.jpg" alt="Foresea_創作理念" class="info_img lazyload">
+                    <div class="info_word">
+                        環保議題日趨重要，近代發生許多海洋遺憾之事，例如：海洋垃圾造成海龜身亡、海水酸化造成珊瑚白化等等，現今人類活動毫無節制下，造成海洋嚴重傷害，若沒有新聞報導指出，一般人也並不會特別注意自己「不環保」的行動。
+                    </div>
+                    <div class="info_word">
+                        海洋議題的意識與環保概念的傳達已刻不容緩，然而現今人們對於環保概念的積極性只出現於特定期間，例如：世界地球日、重大海洋事件發生前後，並未持續關注與改變至本身的動機。因此本專案藉由開發一款益智解謎遊戲，結合環保與海洋相關知識，將遊玩群眾設定在國小高年級以上，希望盡早接觸環保與海洋相關概念。並透過遊戲中生活化的故事帶入，讓使用者體驗與學習，若無意識到這些海洋議題，將讓世界的生態破壞，甚至不可挽回，從中去思考如何行動到真實的日常生活中。
+                    </div>
+                    
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">各項產出</div>
+                    <img data-src="./img/mock_up/Foresea_02.jpg" alt="Foresea_各項產出" class="info_img lazyload">
+                    <div class="info_sub">遊戲</div>
+                    <div class="info_word">在西元2121年，人類長期不重視海洋生態的結果，導致海水變得混濁不堪，地球盎然的生機已不存在。人們不再持續關注海洋議題，像是塑膠微粒、濫捕、有機物汙染、海洋噪音、海水酸化與海洋垃圾等多個問題，逐漸被大家遺忘。</div>
+                    <div class="info_word">
+                        然而一位身世不明的流浪漢帶著一張神秘的照片，將打破習以為常的世界…<br>在Foresea裡，你的行動，決定著海洋的命運！<br>你將化身為不同的角色，面對不同的海洋議題，該怎麼做呢？
+                    </div>
+                    <div class="info_sub">探索不同的議題</div>
+                    <img data-src="./img/mock_up/Foresea_03.jpg" alt="Foresea_遊戲畫面_01" class="info_img lazyload">
+                    <div class="info_word">
+                        精心列選常關注的6個海洋議題，共有6個大關卡。探索故事與每一海洋議題的原因與學習如何改善，並喚起大眾對於海洋議題的重視。 <br>Foresea 全程採用滑鼠操作，簡易的操作方式，就能由淺入深探索議題 !
+                    </div>
+                    <div class="info_sub">扮演多種角色，思考不同立場</div>
+                    <img data-src="./img/mock_up/Foresea_04.jpg" alt="Foresea_遊戲畫面_02" class="info_img lazyload">
+                    <div class="info_word">海洋的問題並非只有少數人的責任，而是每位地球公民都需要學習的事。<br>每一個關卡中，你將扮演不同的角色，也許是日常生活中的普通人、海產店老闆、洗衣精製作員等等，體驗各行各業與海洋的關係，並且發揮自己的影響力。</div>
+                    <div class="info_sub">海洋環保做起來！ 詳細的回饋建議</div>
+                    <img data-src="./img/mock_up/Foresea_05.jpg" alt="Foresea_遊戲畫面_03" class="info_img lazyload">
+                    <div class="info_word">完成每個關卡後，系統檢視關卡中所做的行動，給予不同的回饋，還有貼心的改善操作指南！</div>
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">網頁</div>
+                    <img data-src="./img/mock_up/Foresea_06.jpg" alt="Foresea_網頁畫面" class="info_img lazyload">
+                    <div class="info_sub">六大議題介紹頁，玩遊戲不卡關</div>
+                    <div class="info_word">
+                        Foresea的網頁裡，為六大議題設計了各自的介紹頁。<br>讓使用者能先瀏覽完網頁後再進行遊戲，先有基本的先備知識，遊玩的過程中才能更為印象深刻且運用。
+                    </div>
+                    <div class="info_sub">互動式設計，操作起來更有趣！</div>
+                    <div class="info_word">
+                        我們所設計的互動式網頁能輔助使用者在閱覽時增添幾分趣味。使用者可藉由滑鼠的操作達到許多不同的互動效果，像是可以透過滾輪去控制魚的行進速度、拖曳溫度計看看哪個溫度區間最適合珊瑚生長...<br>還有很多很多小彩蛋都藏在Foresea的網頁裡！
+                    </div>
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">影片展示</div>
+                    <div class="yt-lazyload" data-id="mtxTzKF_SgI" data-thumb="foresea_thumbnail_1" data-logo="3"></div>
+                    <div class="yt-lazyload" data-id="v35Hxo3R598" data-thumb="foresea_thumbnail_2" data-logo="3"></div>
+                </div>
+            </div>
+            <div id="info_bottom">
+                <a href="./Cantonese.html" class="info_btn bt1">
+                    PREV<div class="btn_arrow ba1"></div></a>
+                <div id="member_content">
+                    <div class="member_info">
+                        <img src="./img/member/Foresea_member_1.jpg" alt="洪嬿珊 " class="member_img member_img_foresea">
+                        <div class="member_name">
+                            <div class="member_work">遊戲程式</div>
+                            <div class="member_n">洪嬿珊 
+                                <a href="mailto:a8870506@gmail.com?subject=作品介紹&body=內容">
+                                    <img src="img/icon/icon_gmail.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/Foresea_member_2.jpg" alt="黃綉雯" class="member_img member_img_foresea">
+                        <div class="member_name">
+                            <div class="member_work">網頁設計</div>
+                            <div class="member_n">黃綉雯
+                                <a href="mailto:hsiuwennn5@gmail.com">
+                                    <img src="img/icon/icon_gmail.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/Foresea_member_3.jpg" alt="黃丞榆" class="member_img member_img_foresea">
+                        <div class="member_name">
+                            <div class="member_work">美術設計</div>
+                            <div class="member_n">黃丞榆 
+                                <a href="mailto:cherry71569450@gmail.com?subject=作品介紹&body=內容">
+                                    <img src="img/icon/icon_gmail.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/Foresea_member_4.jpg" alt="臧亭雲" class="member_img member_img_foresea">
+                        <div class="member_name">
+                            <div class="member_work">動畫製作</div>
+                            <div class="member_n">臧亭雲
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="site_content">
+                    <a href="https://byforesea.github.io/foresea/" target="_blank" class="site_link">作品網站</a>
+                </div>
+                <a href="./Rebirth.html" class="info_btn bt2">
+                    NEXT<div class="btn_arrow ba2"></div></a>
+            </div>
+            <div id="footer">
+                <div id="copyright">©&ensp;2021&ensp;國立嘉義大學&ensp;數位學習設計與管理學系</div>
+            </div>
+        </div>
+    </div>
+    <div id="btn_bar">
+        <a href="#" id="gotop" class="side_btn">
+            <img src="./img/icon/icon_triangle.svg" alt="" class="btn_img">TOP
+        </a>
+        <a href="https://ncyu-dedm-exhibition.github.io/top/" target="_blank" class="side_btn" id="gohome">
+            <img src="./img/icon/icon_home.svg" alt="" class="btn_img">HOME
+        </a>
+    </div>
+    <div id="side_bar">
+        <img src="./img/pink_bg.png" alt="" id="side_bg">
+    </div>
+    <div id="top_bar">
+        <div id="bar_bg"></div>
+        <div id="bar_content">
+            <div id="sns_bar">
+                <a href="http://www.ncyu.edu.tw/etech/" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_web.svg" alt="嘉義大學_數位學習設計與管理學系_官方網站" class="icon ic1">
+                </a>
+                <a href="https://www.facebook.com/NCYU.DEDM.GraduationExhibition" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_fb.svg" alt="獨新數_facebook_臉書粉絲專頁" class="icon ic2">
+                </a>
+                <a href="https://www.instagram.com/dedm_expo/" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_ins.svg" alt="獨新數_instagram" class="icon ic3">
+                </a>
+                <a href="https://www.youtube.com/channel/UCNgKsJgIqhodWn0rhgdYPIw/featured" class="icon_link"
+                    target="_blank">
+                    <img src="./img/icon/icon_yt.svg" alt="獨新數_youtube_官方頻道" class="icon ic4">
+                </a>
+            </div>
+            <input id="toggle" type="checkbox">
+            <span class="menu_bg">
+                <div id="menu_link_content">
+                    <div class="link_row">
+                        <a href="./Foresea.html" class="menu_link">
+                            <span class="link_triangle">▶</span>Foresea<br><span class="link_sub">預見海洋最糟的情況，你會怎麼做？</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Rebirth.html" class="menu_link">
+                            <span class="link_triangle">▶</span>Rebirth<br><span class="link_sub">審判與混沌，見證法老重生之途</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Cfood.html" class="menu_link">
+                            <span class="link_triangle">▶</span>味補鮮知<br><span class="link_sub">產地到餐桌，值得收藏的海鮮知識庫</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Breathless.html" class="menu_link">
+                            <span class="link_triangle">▶</span>呼犧<br><span class="link_sub">呼吸停止前，找到生存的方法吧！</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Chipao.html" class="menu_link">
+                            <span class="link_triangle">▶</span>南來旗跑<br><span class="link_sub">人生想要精彩 旗跑就要現在</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Universe.html" class="menu_link">
+                            <span class="link_triangle">▶</span>星伙聊原<br><span class="link_sub">星象之形必有因，破謠解惑為君醒</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Cat.html" class="menu_link">
+                            <span class="link_triangle">▶</span>玻璃瓶裡的貓<br><span class="link_sub">把所有空曠，慢條斯理地盛裝</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Off_carbon.html" class="menu_link">
+                            <span class="link_triangle">▶</span>移碳救境<br><span class="link_sub">一探究竟，就近移碳</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Foundpast.html" class="menu_link">
+                            <span class="link_triangle">▶</span>尋失FoundPast<br><span class="link_sub">霸凌背後的真相，究竟是什麼？</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Allbeefire.html" class="menu_link">
+                            <span class="link_triangle">▶</span>蜂狂夜未眠<br><span class="link_sub">聽聞炮火至，遊人夜未眠</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Whisper.html" class="menu_link">
+                            <span class="link_triangle">▶</span>廟語喃喃<br><span class="link_sub">用擬人化的圖像，拉近與廟的距離</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Cantonese.html" class="menu_link">
+                            <span class="link_triangle">▶</span>闖粵憑交道<br><span class="link_sub">粵級挑戰，等你挑戰！</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                </div>
+                <div id="menu_sns_content">
+                    <div id="sns_word">Follow us</div>
+                    <div id="menu_sns">
+                        <a href="http://www.ncyu.edu.tw/etech/" class="icon_link" target="_blank">
+                            <img src="./img/icon/blue_web.svg" alt="嘉義大學_數位學習設計與管理學系_官方網站" class="m_icon mc1">
+                        </a>
+                        <a href="https://www.facebook.com/NCYU.DEDM.GraduationExhibition" class="icon_link"
+                            target="_blank">
+                            <img src="./img/icon/blue_fb.svg" alt="獨新數_facebook_臉書粉絲專頁" class="m_icon mc2">
+                        </a>
+                        <a href="https://www.instagram.com/dedm_expo/" class="icon_link" target="_blank">
+                            <img src="./img/icon/blue_ins.svg" alt="獨新數_instagram" class="m_icon mc3">
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCNgKsJgIqhodWn0rhgdYPIw/featured" class="icon_link"
+                            target="_blank">
+                            <img src="./img/icon/blue_yt.svg" alt="獨新數_youtube_官方頻道" class="m_icon mc4">
+                        </a>
+                    </div>
+                </div>
+                <img src="./img/logo_top.svg" alt="" id="menu_logo">
+                <div id="menu_line"></div>
+            </span>
+            <div id="menu_bar">
+                <span class="menu_text">MENU&ensp;</span>
+                <div id="menu_btn">
+                    <label for="toggle" class="la">
+                        <svg class="ham hamRotate" viewbox="0 0 100 100" width="80"
+                            onclick="this.classList.toggle('active')">
+                            <path class="line top"
+                                d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+                            <path class="line middle" d="m 30,50 h 40" />
+                            <path class="line bottom"
+                                d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+                        </svg>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.min.js"></script>
+    <script src="./fluid.js"></script> 
+    <script src="./noise.js"></script> 
+    <script src="./js/yt-lazyload.js"></script>
+    <script src="./js/lazysizes.min.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="在這個人人高喊減碳的時代，你是否曾疑惑過為何要減碳，這麼多的二氧化碳從何而來？全球暖化是不是在危言聳聽？小小人類真的會影響偌大的地球嗎？跟著我們一起移碳救境吧！">
+    <meta name="author" content="嘉義大學數位學習設計與管理系110級畢籌會">
+    <meta property="og:image" content="./img/VI/off-carbon_VI.jpg" />
+    <title>移碳救境 off-carbon | 嘉義大學數位系110級畢業展覽</title>
+    <link rel="icon" href="https://dedm66019206.github.io/dedm110expo/index/favicon.ico">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@1,700&amp;family=Noto+Sans+TC:wght@400;700&amp;display=swap">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./rwd.css">
+    <link rel="stylesheet" href="./css/yt-lazyload.min.css">
+</head>
+
+<body>
+    <div class="loading_wrapper">
+        <div class="loading_tetris">
+            <div class="loading_block lb2"></div>
+            <div class="loading_block lb2"></div>
+            <div class="loading_block lb3"></div>
+            <div class="loading_block lb4"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb5"></div>
+            <div class="loading_block lb6"></div>
+            <div class="loading_block lb7"></div>
+            <div class="loading_block lb8"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb9"></div>
+            <div class="loading_block lb10"></div>
+            <div class="loading_block lb11"></div>
+            <div class="loading_block lb12"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb13"></div>
+            <div class="loading_block lb14"></div>
+            <div class="loading_block lb15"></div>
+            <div class="loading_block lb16"></div>
+        </div>
+    </div>
+    <div id="bg">
+        
+        <main role="main" class="main-content">
+            <canvas id="noise" class="noise"></canvas>
+            <img src="./img/web_bg_new.jpg" class="imgg">
+            <div id="box">
+                <canvas id="canvas"></canvas>
+                <script id="vertex-shader" type="x-shader/x-vertex">
+                    varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+                </script>
+            </div>
+        </main>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+            varying vec2 vUv;
+            uniform float delta;
+            uniform float detail;
+            uniform vec2 resolution;
+            // Classic Perlin 3D Noise
+            // by Stefan Gustavson
+            //
+            vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+            vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+            vec3 fade(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+            
+            float cnoise(vec3 P){
+            vec3 Pi0 = floor(P); // Integer part for indexing
+            vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+            Pi0 = mod(Pi0, 289.0);
+            Pi1 = mod(Pi1, 289.0);
+            vec3 Pf0 = fract(P); // Fractional part for interpolation
+            vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+            vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+            vec4 iy = vec4(Pi0.yy, Pi1.yy);
+            vec4 iz0 = Pi0.zzzz;
+            vec4 iz1 = Pi1.zzzz;
+            
+            vec4 ixy = permute(permute(ix) + iy);
+            vec4 ixy0 = permute(ixy + iz0);
+            vec4 ixy1 = permute(ixy + iz1);
+            
+            vec4 gx0 = ixy0 / 7.0;
+            vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
+            gx0 = fract(gx0);
+            vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+            vec4 sz0 = step(gz0, vec4(0.0));
+            gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+            gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+            
+            vec4 gx1 = ixy1 / 7.0;
+            vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
+            gx1 = fract(gx1);
+            vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+            vec4 sz1 = step(gz1, vec4(0.0));
+            gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+            gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+            
+            vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+            vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+            vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+            vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+            vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+            vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+            vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+            vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+            
+            vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+            g000 *= norm0.x;
+            g010 *= norm0.y;
+            g100 *= norm0.z;
+            g110 *= norm0.w;
+            vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+            g001 *= norm1.x;
+            g011 *= norm1.y;
+            g101 *= norm1.z;
+            g111 *= norm1.w;
+            
+            float n000 = dot(g000, Pf0);
+            float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+            float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+            float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+            float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+            float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+            float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+            float n111 = dot(g111, Pf1);
+            
+            vec3 fade_xyz = fade(Pf0);
+            vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+            vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+            float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+            return 2.2 * n_xyz;
+            }
+            
+            
+            //調整顏色
+            vec4 color1 = vec4(190.0, 197.0, 120.0, 255.0) / 255.0; //黃
+            vec4 color2 = vec4(15.0, 21.0, 115.0, 255.0) / 255.0; //深藍
+            vec4 color3 = vec4(36.0, 46.0, 193.0, 255.0) / 255.0; //淺藍
+            vec4 color4 = vec4(148.0, 96.0, 220.0, 255.0) / 255.0; //淺粉
+            vec4 color5 = vec4(212.0, 158.0, 244.0, 255.0) / 255.0; //深紫
+            void main() {
+            float delta = delta * 0.00003; //調整流動速度 越小越慢
+            float noise = abs(cnoise(vec3(vUv*2.0, delta+(detail * 0.5))));
+            vec4 color = color5;
+            if (noise > 0.96) {
+            color = color1;
+            if (mod(floor(vUv.y*50.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.68) {
+            color = color2;
+            if (mod(floor(vUv.x*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.32) {
+            color = color3;
+            if (mod(floor(vUv.x*70.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.12) {
+            color = color4;
+            if (mod(floor(vUv.x*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else {
+            color = color5;
+            if (mod(floor(vUv.y*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            }
+            gl_FragColor = color;
+            }
+            </script>
+    </div>
+    <div id="main_content">
+        <img src="./img/logo_top.svg" alt="獨新數" id="main_logo">
+        <div class="info_all info_Offcarbon">
+            <div id="info_content">
+                <div id="info_top">
+                    <div id="info_tag">#平面設計&emsp;#動態影像與動畫&emsp;#應用程式&emsp;#網頁設計&emsp;</div>
+                    <div id="info_title">移碳救境 off-carbon</div>
+                    <div id="info_member"><br>組員：魏湘錡、張尹甄、關靖蓉、曾承偉<br>指導教授：李佩倫</div>
+                    
+                </div>
+                <div class="info_section">
+                    <div class="info_word">
+                        這是一個以二氧化碳為主題的知識型網站，因為全球暖化日益嚴重，因此我們決定從「二氧化碳」進⾏切入，設計互動式網站，來讓我們的受眾能更輕鬆的了解主題。
+                    </div>
+                    <div class="info_sub">【創作理念】</div>
+                    <div class="info_word">
+                        生活中常常聽到減少碳⾜跡，縱使環保團體用了很多方式讓我們了解如何能減少日常碳排量，但很多人其實很無感，其一是⼆氧化碳屬於氣體，無色無味因此即使你減碳了也很無感，再者因為⼆氧化碳帶來的影響⼤部分都是間接相關並不是像減少垃圾一樣可以立竿見影，因此常常民眾對此的感受力道並不強。所以我們希望做⼀個資訊整合的網站，從成因到後果，透過一條龍的方式讓⺠民眾能不用到處查找資料，就能輕鬆了解這個環境議題。
+                    </div>
+                    <img data-src="./img/mock_up/off-carbon_01.jpg" alt="移碳救境_創作理念" class="info_img lazyload">
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">【各項產出介紹】</div>                    
+                    <div class="info_word">網站：從⼆氧化碳的「成因」作為開始，先簡單簡介二氧化碳的化學特性與⽣生成元素，讓受眾有簡單的了解，其⽬目的是希望受眾能明白我們並非要消滅二氧化碳。</div>
+                    <img data-src="./img/mock_up/off-carbon_02.jpg" alt="移碳救境_各項產出介紹_01" class="info_img lazyload">
+                    <div class="info_word">
+                        了解成因之後，帶出9⼤自工業⾰命以來因全球暖化引起的氣候災難，以及室內⼆氧化碳濃度對人體影響，讓受眾知道全球暖化並不是假議題，在這種比較艱澀的議題上⽤動圖搭配精簡的文字，並標出內容重點，讓受眾能更更好吸收。
+                    </div>
+                    <div class="info_word">清楚目前的尷尬處境之後，「碳排計算機」讓使⽤者計算在日常⽣生活中的碳排放量，⽤較為趣味的方式去了解到其實我們在無形之間製造了非常可觀的二氧化碳，其⽬的是將「⼆氧化碳」量化與形象化。在未來校外展中，我們會以一個特別的方式呈現我們對未來⽣活的想像。
+                    </div>
+                    <img data-src="./img/mock_up/off-carbon_03.jpg" alt="移碳救境_排碳計算機" class="info_img lazyload">
+                    <div class="info_word">當⼆氧化碳越來越具象以後，就可以開始減碳了，在網⾴上我們整理了在⽣活中即可執⾏的減碳方法，分為食衣、住行、育樂三項，利⽤動畫呈現。讓受眾想看就看，想點就點。</div>
+                </div>
+                <div class="info_section">                    
+                    <div class="info_word">
+                        動畫：在網頁減碳頁，我們以三支動畫呈現我們在日常中可以做哪些行為來減碳，整體以較為有趣⽣動並且以劇情式發展的⽅式呈現，提升學習的樂趣。
+                    </div>
+                    <img data-src="./img/mock_up/off-carbon_04.jpg" alt="移碳救境_動畫" class="info_img lazyload">                    
+                </div>
+                <div class="info_section">                    
+                    <div class="info_word">
+                        環境監測儀：讓受眾能用數據化的方式了解環境因子，利用科技的進步來來改善環境，並且期望能夠達到綠能生活的願景。
+                    </div>
+                    <img data-src="./img/mock_up/off-carbon_05.jpg" alt="移碳救境_環境監測儀" class="info_img lazyload">   
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">【標語】</div>
+                    <div class="info_word">
+                        減碳不是口號，而需⾝體力⾏。我們將網⾴進行整合，條理分明讓受眾了解我們所要傳達的內容，期待共創美好未來。
+                    </div>
+                    
+                </div>
+            </div>
+            <div id="info_bottom">
+                <a href="./Cat.html" class="info_btn bt1">
+                    PREV<div class="btn_arrow ba1"></div></a>
+                <div id="member_content">
+                    <div class="member_info">
+                        <img src="./img/member/off_carbon_member_1.jpg" alt="移碳救境_組員_魏湘錡" class="member_img">
+                        <div class="member_name">
+                            <div class="member_work">介面設計</div>
+                            <div class="member_n">魏湘錡 
+                                <a href="https://www.behance.net/wei1610" target="_blank">
+                                    <img src="img/icon/icon_behance.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/off_carbon_member_2.jpg" alt="移碳救境_組員_張尹甄" class="member_img">
+                        <div class="member_name">
+                            <div class="member_work">動畫製作</div>
+                            <div class="member_n">張尹甄
+                                <a href="https://www.instagram.com/jenniferkeykey/" target="_blank">
+                                    <img src="img/icon/icon_ins.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/off_carbon_member_3.jpg" alt="移碳救境_組員_關靖蓉" class="member_img">
+                        <div class="member_name">
+                            <div class="member_work">美術設計</div>
+                            <div class="member_n">關靖蓉 
+                                <a href="mailto:rf61128@gmail.com?subject=作品介紹&body=內容">
+                                    <img src="img/icon/icon_gmail.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/off_carbon_member_4.jpg" alt="移碳救境_組員_曾承偉" class="member_img">
+                        <div class="member_name">
+                            <div class="member_work">網頁撰寫</div>
+                            <div class="member_n">曾承偉
+                                <a href="https://www.facebook.com/chengwei.tseng.3"target="_blank" >
+                                    <img src="./img/icon/icon_fb.svg" alt="" class="member_link">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="site_content">
+                    <a href="https://awei1996.github.io/Off-Carbon/" target="_blank" class="site_link">作品網站</a>
+                    <a href="https://www.facebook.com/dedm.off.carbon" target="_blank" class="site_link">Facebook</a>
+                    <a href="https://www.instagram.com/off_carbon/" target="_blank" class="site_link">Instagram</a>
+                </div>
+                <a href="./Foundpast.html" class="info_btn bt2">
+                    NEXT<div class="btn_arrow ba2"></div></a>
+            </div>
+            <div id="footer">
+                <div id="copyright">©&ensp;2021&ensp;國立嘉義大學&ensp;數位學習設計與管理學系</div>
+            </div>
+        </div>
+    </div>
+    <div id="btn_bar">
+        <a href="#" id="gotop" class="side_btn">
+            <img src="./img/icon/icon_triangle.svg" alt="" class="btn_img">TOP
+        </a>
+        <a href="https://ncyu-dedm-exhibition.github.io/top/" target="_blank" class="side_btn" id="gohome">
+            <img src="./img/icon/icon_home.svg" alt="" class="btn_img">HOME
+        </a>
+    </div>
+    <div id="side_bar">
+        <img src="./img/pink_bg.png" alt="" id="side_bg">
+    </div>
+    <div id="top_bar">
+        <div id="bar_bg"></div>
+        <div id="bar_content">
+            <div id="sns_bar">
+                <a href="http://www.ncyu.edu.tw/etech/" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_web.svg" alt="嘉義大學_數位學習設計與管理學系_官方網站" class="icon ic1">
+                </a>
+                <a href="https://www.facebook.com/NCYU.DEDM.GraduationExhibition" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_fb.svg" alt="獨新數_facebook_臉書粉絲專頁" class="icon ic2">
+                </a>
+                <a href="https://www.instagram.com/dedm_expo/" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_ins.svg" alt="獨新數_instagram" class="icon ic3">
+                </a>
+                <a href="https://www.youtube.com/channel/UCNgKsJgIqhodWn0rhgdYPIw/featured" class="icon_link"
+                    target="_blank">
+                    <img src="./img/icon/icon_yt.svg" alt="獨新數_youtube_官方頻道" class="icon ic4">
+                </a>
+            </div>
+            <input id="toggle" type="checkbox">
+            <span class="menu_bg">
+                <div id="menu_link_content">
+                    <div class="link_row">
+                        <a href="./Foresea.html" class="menu_link">
+                            <span class="link_triangle">▶</span>Foresea<br><span class="link_sub">預見海洋最糟的情況，你會怎麼做？</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Rebirth.html" class="menu_link">
+                            <span class="link_triangle">▶</span>Rebirth<br><span class="link_sub">審判與混沌，見證法老重生之途</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Cfood.html" class="menu_link">
+                            <span class="link_triangle">▶</span>味補鮮知<br><span class="link_sub">產地到餐桌，值得收藏的海鮮知識庫</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Breathless.html" class="menu_link">
+                            <span class="link_triangle">▶</span>呼犧<br><span class="link_sub">呼吸停止前，找到生存的方法吧！</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Chipao.html" class="menu_link">
+                            <span class="link_triangle">▶</span>南來旗跑<br><span class="link_sub">人生想要精彩 旗跑就要現在</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Universe.html" class="menu_link">
+                            <span class="link_triangle">▶</span>星伙聊原<br><span class="link_sub">星象之形必有因，破謠解惑為君醒</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Cat.html" class="menu_link">
+                            <span class="link_triangle">▶</span>玻璃瓶裡的貓<br><span class="link_sub">把所有空曠，慢條斯理地盛裝</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Off_carbon.html" class="menu_link">
+                            <span class="link_triangle">▶</span>移碳救境<br><span class="link_sub">一探究竟，就近移碳</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Foundpast.html" class="menu_link">
+                            <span class="link_triangle">▶</span>尋失FoundPast<br><span class="link_sub">霸凌背後的真相，究竟是什麼？</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Allbeefire.html" class="menu_link">
+                            <span class="link_triangle">▶</span>蜂狂夜未眠<br><span class="link_sub">聽聞炮火至，遊人夜未眠</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Whisper.html" class="menu_link">
+                            <span class="link_triangle">▶</span>廟語喃喃<br><span class="link_sub">用擬人化的圖像，拉近與廟的距離</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Cantonese.html" class="menu_link">
+                            <span class="link_triangle">▶</span>闖粵憑交道<br><span class="link_sub">粵級挑戰，等你挑戰！</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                </div>
+                <div id="menu_sns_content">
+                    <div id="sns_word">Follow us</div>
+                    <div id="menu_sns">
+                        <a href="http://www.ncyu.edu.tw/etech/" class="icon_link" target="_blank">
+                            <img src="./img/icon/blue_web.svg" alt="嘉義大學_數位學習設計與管理學系_官方網站" class="m_icon mc1">
+                        </a>
+                        <a href="https://www.facebook.com/NCYU.DEDM.GraduationExhibition" class="icon_link"
+                            target="_blank">
+                            <img src="./img/icon/blue_fb.svg" alt="獨新數_facebook_臉書粉絲專頁" class="m_icon mc2">
+                        </a>
+                        <a href="https://www.instagram.com/dedm_expo/" class="icon_link" target="_blank">
+                            <img src="./img/icon/blue_ins.svg" alt="獨新數_instagram" class="m_icon mc3">
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCNgKsJgIqhodWn0rhgdYPIw/featured" class="icon_link"
+                            target="_blank">
+                            <img src="./img/icon/blue_yt.svg" alt="獨新數_youtube_官方頻道" class="m_icon mc4">
+                        </a>
+                    </div>
+                </div>
+                <img src="./img/logo_top.svg" alt="" id="menu_logo">
+                <div id="menu_line"></div>
+            </span>
+            <div id="menu_bar">
+                <span class="menu_text">MENU&ensp;</span>
+                <div id="menu_btn">
+                    <label for="toggle" class="la">
+                        <svg class="ham hamRotate" viewbox="0 0 100 100" width="80"
+                            onclick="this.classList.toggle('active')">
+                            <path class="line top"
+                                d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+                            <path class="line middle" d="m 30,50 h 40" />
+                            <path class="line bottom"
+                                d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+                        </svg>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.min.js"></script>
+    <script src="./fluid.js"></script> 
+    <script src="./noise.js"></script> 
+    <script src="./js/yt-lazyload.js"></script>
+    <script src="./js/lazysizes.min.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>

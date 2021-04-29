@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="講到廟宇你會想到什麼？是廟口小吃或廟會？還是逢年過節必去拜訪的神明？廟宇是台灣人日常的風景之一。我們與廟宇之間若即若離廟語喃喃用擬人化的圖像拉近與廟的距離">
+    <meta name="author" content="嘉義大學數位學習設計與管理系110級畢籌會">
+    <meta property="og:image" content="./img/VI/Whisper_VI.jpg" />
+    <title>廟語喃喃 | 嘉義大學數位系110級畢業展覽</title>
+    <link rel="icon" href="https://dedm66019206.github.io/dedm110expo/index/favicon.ico">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@1,700&amp;family=Noto+Sans+TC:wght@400;700&amp;display=swap">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./rwd.css">
+    <link rel="stylesheet" href="./css/yt-lazyload.min.css">
+</head>
+
+<body>
+    <div class="loading_wrapper">
+        <div class="loading_tetris">
+            <div class="loading_block lb2"></div>
+            <div class="loading_block lb2"></div>
+            <div class="loading_block lb3"></div>
+            <div class="loading_block lb4"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb5"></div>
+            <div class="loading_block lb6"></div>
+            <div class="loading_block lb7"></div>
+            <div class="loading_block lb8"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb9"></div>
+            <div class="loading_block lb10"></div>
+            <div class="loading_block lb11"></div>
+            <div class="loading_block lb12"></div>
+        </div>
+        <div class="loading_tetris">
+            <div class="loading_block lb13"></div>
+            <div class="loading_block lb14"></div>
+            <div class="loading_block lb15"></div>
+            <div class="loading_block lb16"></div>
+        </div>
+    </div>
+    <div id="bg">
+        
+        <main role="main" class="main-content">
+            <canvas id="noise" class="noise"></canvas>
+            <img src="./img/web_bg_new.jpg" class="imgg">
+            <div id="box">
+                <canvas id="canvas"></canvas>
+                <script id="vertex-shader" type="x-shader/x-vertex">
+                    varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+                </script>
+            </div>
+        </main>
+        <script id="fragment-shader" type="x-shader/x-fragment">
+            varying vec2 vUv;
+            uniform float delta;
+            uniform float detail;
+            uniform vec2 resolution;
+            // Classic Perlin 3D Noise
+            // by Stefan Gustavson
+            //
+            vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+            vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+            vec3 fade(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+            
+            float cnoise(vec3 P){
+            vec3 Pi0 = floor(P); // Integer part for indexing
+            vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+            Pi0 = mod(Pi0, 289.0);
+            Pi1 = mod(Pi1, 289.0);
+            vec3 Pf0 = fract(P); // Fractional part for interpolation
+            vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+            vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+            vec4 iy = vec4(Pi0.yy, Pi1.yy);
+            vec4 iz0 = Pi0.zzzz;
+            vec4 iz1 = Pi1.zzzz;
+            
+            vec4 ixy = permute(permute(ix) + iy);
+            vec4 ixy0 = permute(ixy + iz0);
+            vec4 ixy1 = permute(ixy + iz1);
+            
+            vec4 gx0 = ixy0 / 7.0;
+            vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
+            gx0 = fract(gx0);
+            vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+            vec4 sz0 = step(gz0, vec4(0.0));
+            gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+            gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+            
+            vec4 gx1 = ixy1 / 7.0;
+            vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
+            gx1 = fract(gx1);
+            vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+            vec4 sz1 = step(gz1, vec4(0.0));
+            gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+            gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+            
+            vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+            vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+            vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+            vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+            vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+            vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+            vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+            vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+            
+            vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+            g000 *= norm0.x;
+            g010 *= norm0.y;
+            g100 *= norm0.z;
+            g110 *= norm0.w;
+            vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+            g001 *= norm1.x;
+            g011 *= norm1.y;
+            g101 *= norm1.z;
+            g111 *= norm1.w;
+            
+            float n000 = dot(g000, Pf0);
+            float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+            float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+            float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+            float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+            float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+            float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+            float n111 = dot(g111, Pf1);
+            
+            vec3 fade_xyz = fade(Pf0);
+            vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+            vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+            float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+            return 2.2 * n_xyz;
+            }
+            
+            
+            //調整顏色
+            vec4 color1 = vec4(190.0, 197.0, 120.0, 255.0) / 255.0; //黃
+            vec4 color2 = vec4(15.0, 21.0, 115.0, 255.0) / 255.0; //深藍
+            vec4 color3 = vec4(36.0, 46.0, 193.0, 255.0) / 255.0; //淺藍
+            vec4 color4 = vec4(148.0, 96.0, 220.0, 255.0) / 255.0; //淺粉
+            vec4 color5 = vec4(212.0, 158.0, 244.0, 255.0) / 255.0; //深紫
+            void main() {
+            float delta = delta * 0.00003; //調整流動速度 越小越慢
+            float noise = abs(cnoise(vec3(vUv*2.0, delta+(detail * 0.5))));
+            vec4 color = color5;
+            if (noise > 0.96) {
+            color = color1;
+            if (mod(floor(vUv.y*50.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.68) {
+            color = color2;
+            if (mod(floor(vUv.x*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.32) {
+            color = color3;
+            if (mod(floor(vUv.x*70.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else if (noise > 0.12) {
+            color = color4;
+            if (mod(floor(vUv.x*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            } else {
+            color = color5;
+            if (mod(floor(vUv.y*100.0), 2.0) == 0.0) {
+            color *= 1.1;
+            }
+            }
+            gl_FragColor = color;
+            }
+            </script>
+    </div>
+    <div id="main_content">
+        <img src="./img/logo_top.svg" alt="獨新數" id="main_logo">
+        <div class="info_all info_Whisper">
+            <div id="info_content" >
+                <div id="info_top">
+                    <div id="info_tag">#平面設計&emsp;#網頁設計&emsp;</div>
+                    <div id="info_title">廟語喃喃</div>
+                    <div id="info_member"><br>組員：丁美佐、陳鈺樺<br>指導教授：朱彩馨</div>
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">作品介紹</div>
+                    <div class="info_word">
+                        廟語喃喃是將六座廟宇，包含新港奉天宮、台北行天宮、佳里金唐殿、新竹城隍廟、南鯤鯓代天府與竹山紫南宮以擬人化的方式，製作出六位廟齡少女。讓她們藉由不同的角色形象與服裝搭配等，帶領大家看到廟宇不一樣的樣貌與文化內涵。
+                    </div>
+                    <img data-src="./img/mock_up/Whisper_01.jpg" alt="廟語喃喃_作品介紹_01" class="info_img lazyload">
+                    <img data-src="./img/mock_up/Whisper_02.jpg" alt="廟語喃喃_作品介紹_02" class="info_img lazyload">
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">六位廟齡少女</div>
+                    <div class="info_word">
+                        六位少女分別介紹臺灣六間特色廟宇，不僅僅是藉由角色的服裝凸顯廟宇的裝飾特色，更是將傳統廟宇所擁有的特色文化以少女們導覽的方式介紹給大家。希望可以藉由我們的專題，帶給大家不一樣的廟宇樣貌，形象化的角色創造不一樣的視角，看待台灣傳統文化。
+                    </div>
+                    <img data-src="./img/mock_up/Whisper_03.jpg" alt="廟語喃喃_廟齡少女_01" class="info_img lazyload">
+                    <img data-src="./img/mock_up/Whisper_04.jpg" alt="廟語喃喃_廟齡少女_02" class="info_img lazyload">
+                    <img data-src="./img/mock_up/Whisper_05.jpg" alt="廟語喃喃_廟齡少女_03" class="info_img lazyload">
+                </div>
+                <div class="info_section">
+                    <div class="info_sub">人物介紹網頁</div>
+                    <div class="info_word">
+                        藉由網頁的形式，將廟宇擬人的形象化角色進行介紹，搭配簡單的互動遊戲，讓觀看網頁的人能夠得到廟宇的相關介紹與故事等。希望藉由這樣的人物與網頁介紹，可以讓觀看的民眾離廟宇更加親近，拉近廟宇與我們之間的距離。
+                    </div>
+                    <img data-src="./img/mock_up/Whisper_06.jpg" alt="廟語喃喃_人物介紹網頁_01" class="info_img lazyload">
+                    <img data-src="./img/mock_up/Whisper_07.jpg" alt="廟語喃喃_人物介紹網頁_02" class="info_img lazyload">
+                    </div>
+            </div>
+            <div id="info_bottom">
+                <a href="./Allbeefire.html" class="info_btn bt1">
+                    PREV<div class="btn_arrow ba1"></div></a>
+                <div id="member_content">
+                    <div class="member_info">
+                        <img src="./img/member/whisper_member_1.jpg" alt="廟語喃喃_組員_丁美佐" class="member_img member_img_foresea">
+                        <div class="member_name">
+                            <div class="member_work">網頁設計</div>
+                            <div class="member_n">丁美佐
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="member_info">
+                        <img src="./img/member/whisper_member_2.jpg" alt="廟語喃喃_組員_陳鈺樺" class="member_img member_img_foresea">
+                        <div class="member_name">
+                            <div class="member_work">美術設計</div>
+                            <div class="member_n">陳鈺樺
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="site_content">
+                    <a href="https://dedmwhisper.github.io/Home/" target="_blank" class="site_link">作品網站</a>
+                </div>
+                <a href="./Cantonese.html" class="info_btn bt2">
+                    NEXT<div class="btn_arrow ba2"></div></a>
+            </div>
+            <div id="footer">
+                <div id="copyright">©&ensp;2021&ensp;國立嘉義大學&ensp;數位學習設計與管理學系</div>
+            </div>
+        </div>
+    </div>
+    <div id="btn_bar">
+        <a href="#" id="gotop" class="side_btn">
+            <img src="./img/icon/icon_triangle.svg" alt="" class="btn_img">TOP
+        </a>
+        <a href="https://ncyu-dedm-exhibition.github.io/top/" target="_blank" class="side_btn" id="gohome">
+            <img src="./img/icon/icon_home.svg" alt="" class="btn_img">HOME
+        </a>
+    </div>
+    <div id="side_bar">
+        <img src="./img/pink_bg.png" alt="" id="side_bg">
+    </div>
+    <div id="top_bar">
+        <div id="bar_bg"></div>
+        <div id="bar_content">
+            <div id="sns_bar">
+                <a href="http://www.ncyu.edu.tw/etech/" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_web.svg" alt="嘉義大學_數位學習設計與管理學系_官方網站" class="icon ic1">
+                </a>
+                <a href="https://www.facebook.com/NCYU.DEDM.GraduationExhibition" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_fb.svg" alt="獨新數_facebook_臉書粉絲專頁" class="icon ic2">
+                </a>
+                <a href="https://www.instagram.com/dedm_expo/" class="icon_link" target="_blank">
+                    <img src="./img/icon/icon_ins.svg" alt="獨新數_instagram" class="icon ic3">
+                </a>
+                <a href="https://www.youtube.com/channel/UCNgKsJgIqhodWn0rhgdYPIw/featured" class="icon_link"
+                    target="_blank">
+                    <img src="./img/icon/icon_yt.svg" alt="獨新數_youtube_官方頻道" class="icon ic4">
+                </a>
+            </div>
+            <input id="toggle" type="checkbox">
+            <span class="menu_bg">
+                <div id="menu_link_content">
+                    <div class="link_row">
+                        <a href="./Foresea.html" class="menu_link">
+                            <span class="link_triangle">▶</span>Foresea<br><span class="link_sub">預見海洋最糟的情況，你會怎麼做？</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Rebirth.html" class="menu_link">
+                            <span class="link_triangle">▶</span>Rebirth<br><span class="link_sub">審判與混沌，見證法老重生之途</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Cfood.html" class="menu_link">
+                            <span class="link_triangle">▶</span>味補鮮知<br><span class="link_sub">產地到餐桌，值得收藏的海鮮知識庫</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Breathless.html" class="menu_link">
+                            <span class="link_triangle">▶</span>呼犧<br><span class="link_sub">呼吸停止前，找到生存的方法吧！</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Chipao.html" class="menu_link">
+                            <span class="link_triangle">▶</span>南來旗跑<br><span class="link_sub">人生想要精彩 旗跑就要現在</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Universe.html" class="menu_link">
+                            <span class="link_triangle">▶</span>星伙聊原<br><span class="link_sub">星象之形必有因，破謠解惑為君醒</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Cat.html" class="menu_link">
+                            <span class="link_triangle">▶</span>玻璃瓶裡的貓<br><span class="link_sub">把所有空曠，慢條斯理地盛裝</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Off_carbon.html" class="menu_link">
+                            <span class="link_triangle">▶</span>移碳救境<br><span class="link_sub">一探究竟，就近移碳</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Foundpast.html" class="menu_link">
+                            <span class="link_triangle">▶</span>尋失FoundPast<br><span class="link_sub">霸凌背後的真相，究竟是什麼？</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                    <div class="link_row">
+                        <a href="./Allbeefire.html" class="menu_link">
+                            <span class="link_triangle">▶</span>蜂狂夜未眠<br><span class="link_sub">聽聞炮火至，遊人夜未眠</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Whisper.html" class="menu_link">
+                            <span class="link_triangle">▶</span>廟語喃喃<br><span class="link_sub">用擬人化的圖像，拉近與廟的距離</span>
+                            <div class="link_line"></div>
+                        </a>
+                        <a href="./Cantonese.html" class="menu_link">
+                            <span class="link_triangle">▶</span>闖粵憑交道<br><span class="link_sub">粵級挑戰，等你挑戰！</span>
+                            <div class="link_line"></div>
+                        </a>
+                        
+                    </div>
+                </div>
+                <div id="menu_sns_content">
+                    <div id="sns_word">Follow us</div>
+                    <div id="menu_sns">
+                        <a href="http://www.ncyu.edu.tw/etech/" class="icon_link" target="_blank">
+                            <img src="./img/icon/blue_web.svg" alt="嘉義大學_數位學習設計與管理學系_官方網站" class="m_icon mc1">
+                        </a>
+                        <a href="https://www.facebook.com/NCYU.DEDM.GraduationExhibition" class="icon_link"
+                            target="_blank">
+                            <img src="./img/icon/blue_fb.svg" alt="獨新數_facebook_臉書粉絲專頁" class="m_icon mc2">
+                        </a>
+                        <a href="https://www.instagram.com/dedm_expo/" class="icon_link" target="_blank">
+                            <img src="./img/icon/blue_ins.svg" alt="獨新數_instagram" class="m_icon mc3">
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCNgKsJgIqhodWn0rhgdYPIw/featured" class="icon_link"
+                            target="_blank">
+                            <img src="./img/icon/blue_yt.svg" alt="獨新數_youtube_官方頻道" class="m_icon mc4">
+                        </a>
+                    </div>
+                </div>
+                <img src="./img/logo_top.svg" alt="" id="menu_logo">
+                <div id="menu_line"></div>
+            </span>
+            <div id="menu_bar">
+                <span class="menu_text">MENU&ensp;</span>
+                <div id="menu_btn">
+                    <label for="toggle" class="la">
+                        <svg class="ham hamRotate" viewbox="0 0 100 100" width="80"
+                            onclick="this.classList.toggle('active')">
+                            <path class="line top"
+                                d="m 30,33 h 40 c 0,0 9.044436,-0.654587 9.044436,-8.508902 0,-7.854315 -8.024349,-11.958003 -14.89975,-10.85914 -6.875401,1.098863 -13.637059,4.171617 -13.637059,16.368042 v 40" />
+                            <path class="line middle" d="m 30,50 h 40" />
+                            <path class="line bottom"
+                                d="m 30,67 h 40 c 12.796276,0 15.357889,-11.717785 15.357889,-26.851538 0,-15.133752 -4.786586,-27.274118 -16.667516,-27.274118 -11.88093,0 -18.499247,6.994427 -18.435284,17.125656 l 0.252538,40" />
+                        </svg>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/100/three.min.js"></script>
+    <script src="./fluid.js"></script> 
+    <script src="./noise.js"></script> 
+    <script src="./js/yt-lazyload.js"></script>
+    <script src="./js/lazysizes.min.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>

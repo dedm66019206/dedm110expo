@@ -484,7 +484,8 @@
     }
 
     #about_num {
-        font-size: 2px;
+        font-size: 2.5px;
+        top: -5px;
     }
 
     #about_content {
@@ -522,11 +523,11 @@
     #info_address {
         left: 12.5%;
         width: 75%;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .address_b {
-        font-size: 24px;
+        font-size: 26px;
     }
 
     #menu_link_content {
