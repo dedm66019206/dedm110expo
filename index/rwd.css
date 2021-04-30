@@ -126,7 +126,7 @@
         height: 150px;
         font-size: 14px;
         line-height: 18px;
-        animation: down2 2s infinite;
+        animation: none;
     }
 
     .down_date {
@@ -278,11 +278,6 @@
 
     .info_color {
         display: none;
-    }
-
-    #copyright {
-        font-size: 8px;
-        text-align: center;
     }
 
     #side_bar {
@@ -465,8 +460,8 @@
     }
 
     .works {
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
     }
 
     .w_title {
@@ -508,16 +503,23 @@
         left: 12.5%;
     }
 
-    #info_event::before{
+    #info_event::before {
         right: 0%;
-        width: 30%;;
+        width: 30%;
     }
 
     #info_date {
         left: 12.5%;
         width: 75%;
-        font-size: 32px;
-        /* border: 1px solid; */
+        font-size: 28px;
+    }
+
+    #info_date::before {
+        height: 5%;
+    }
+
+    .date_s {
+        font-size: 14px;
     }
 
     #info_address {
@@ -543,7 +545,228 @@
     }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 979px){
+@media only screen and (min-width: 768px) and (max-width: 979px) {
+
+    #copyright {
+        font-size: 8px;
+    }
+
+    #left_content {
+        top: 27%;
+        left: 22.5%;
+        width: 55%;
+        height: 40%;
+    }
+
+    #top_logo {
+        width: auto;
+        height: 170px;
+        top: -2.5%;
+        left: 50%;
+        transform: translate(-50%);
+        filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.5));
+    }
+
+    .pink_line.tl1,
+    .pink_line.tl2 {
+        width: 0.5vh;
+    }
+
+    .pink_line.tl3 {
+        height: 0.5vh;
+    }
+
+    .pink_line.sl2 {
+        bottom: -6.5%;
+        right: 50%;
+        height: 20vh;
+        width: 0.5vh;
+    }
+
+    #tetris_line1 {
+        bottom: 3%;
+    }
+
+    #tetris_line2 {
+        bottom: 11%;
+    }
+
+    #tetris_line3 {
+        bottom: 19%;
+    }
+
+    #tetris_line4 {
+        bottom: 27%;
+    }
+
+    #girl {
+        bottom: -2.5%;
+    }
+
+    #right_content {
+        top: 10%;
+        left: 5%;
+        width: 90%;
+        height: 90%;
+        /* border: 1px solid; */
+    }
+
+    #video_content {
+        width: 80%;
+        height: auto;
+        left: 50%;
+        bottom: -5%;
+        transform: translate(-50%);
+        border: 0.5vh solid #ffffff;
+        /* filter: none; */
+    }
+
+    .vl1,
+    .vl2,
+    .vl3 {
+        display: none;
+    }
+
+    .pink_line.sl1 {
+        display: none;
+    }
+
+    #down {
+        bottom: 27.5%;
+        width: 180px;
+        height: 180px;
+        line-height: 24px;
+        animation: none;
+    }
+
+    .down_date {
+        font-size: 28px;
+        line-height: 24px;
+    }
+
+    .down_event {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    #trailer_num {
+        bottom: 30%;
+        left: 25%;
+        width: 50%;
+        font-size: 10px;
+    }
+
+    #works_content {
+        top: 15%;
+        left: 10%;
+        width: 80%;
+        justify-content: space-around;
+        /* border: 1px solid; */
+    }
+
+    #works_content::after,
+    #about_content::after {
+        top: -3%;
+        left: 57.5%;
+        width: 40%;
+        height: 1px;
+        margin-top: -85px;
+    }
+
+    .works {
+        width: 17em;
+        height: 17em;
+    }
+
+    .title {
+        left: 10%;
+        margin-top: -25%;
+        font-size: 5.5em;
+        letter-spacing: 0.1em;
+        transform: none;
+    }
+
+    #about_content {
+        left: 7.5%;
+        top: 25%;
+        width: 85%;
+        height: 60%;
+    }
+
+    #about_content::after {
+        margin-top: -110px;
+    }
+
+    .pink_line.al3::after {
+        top: -18px;
+        width: 160px;
+        border-bottom: 20px solid #ffffff;
+        border-left: 20px solid transparent;
+    }
+
+    #about_num {
+        font-size: 4px;
+    }
+
+    #about_logo {
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    #about_sub {
+        top: 120px;
+        left: 10%;
+        width: 80%;
+        font-size: 12px;
+        line-height: 25px;
+        /* border: 1px solid; */
+    }
+
+    .sub_b {
+        font-size: 18px;
+    }
+
+    #about_word {
+        top: 240px;
+        left: 10%;
+        width: 80%;
+        font-size: 20px;
+        line-height: 36px;
+        text-align: center;
+    }
+
+    #about_voice {
+        display: none;
+
+    }
+
+    #info_event {
+        left: 10%;
+        width: 68%;
+    }
+
+    #info_date {
+        left: 10%;
+        width: 60%;
+    }
+
+    .date_s {
+        font-size: 32px;
+    }
+
+    #info_address {
+        left: 10%;
+        width: 80%;
+        font-size: 18px;
+    }
+
+    .modal_btn {
+        left: 75%;
+    }
+
+    .info_color {
+        display: none;
+    }
 
     #side_bar {
         display: none;
@@ -613,7 +836,211 @@
     }
 }
 
-@media only screen and (min-width: 980px){
+@media only screen and (min-width: 980px) and (max-width: 1100px) {
+
+    #copyright {
+        font-size: 8px;
+    }
+
+    #left_content {
+        top: 27%;
+        left: 22.5%;
+        width: 55%;
+        height: 40%;
+    }
+
+    #top_logo {
+        width: auto;
+        height: 220px;
+        top: -2.5%;
+        left: 50%;
+        transform: translate(-50%);
+        filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.5));
+    }
+
+    .pink_line.tl1,
+    .pink_line.tl2 {
+        width: 0.5vh;
+    }
+
+    .pink_line.tl3 {
+        height: 0.5vh;
+    }
+
+    .pink_line.sl2 {
+        bottom: -6.5%;
+        right: 50%;
+        height: 20vh;
+        width: 0.5vh;
+    }
+
+    #tetris_line1 {
+        bottom: 3%;
+    }
+
+    #tetris_line2 {
+        bottom: 11%;
+    }
+
+    #tetris_line3 {
+        bottom: 19%;
+    }
+
+    #tetris_line4 {
+        bottom: 27%;
+    }
+
+    .tetris{
+        width: 2.5em;
+        height: 2.5em;
+    }
+
+    #girl {
+        bottom: -2.5%;
+    }
+
+    #right_content {
+        top: 10%;
+        left: 5%;
+        width: 90%;
+        height: 90%;
+    }
+
+    #video_content {
+        width: 80%;
+        height: auto;
+        left: 50%;
+        bottom: -5%;
+        transform: translate(-50%);
+        border: 0.5vh solid #ffffff;
+    }
+
+    .vl1,
+    .vl2,
+    .vl3 {
+        display: none;
+    }
+
+    .pink_line.sl1 {
+        display: none;
+    }
+
+    #down {
+        bottom: 27.5%;
+        width: 240px;
+        height: 240px;
+        line-height: 28px;
+        animation: none;
+    }
+
+    .down_date {
+        font-size: 36px;
+        line-height: 42px;
+    }
+
+    .down_event {
+        font-size: 42px;
+        line-height: 42px;
+    }
+
+    #trailer_num {
+        bottom: 30%;
+        left: 25%;
+        width: 50%;
+        font-size: 10px;
+    }
+
+    #works_content {
+        top: 15%;
+        left: 10%;
+        width: 80%;
+        justify-content: space-around;
+    }
+
+    #works_content::after,
+    #about_content::after {
+        top: -5%;
+        left: 57.5%;
+        width: 40%;
+        height: 1px;
+        margin-top: -70px;
+    }
+
+    .works {
+        width: 22.5em;
+        height: 22.5em;
+    }
+
+    .w_title {
+        font-size: 32px;
+    }
+
+    .title_e {
+        font-size: 24px;
+    }
+
+    .works_btn {
+        width: 100px;
+        height: 100px;
+    }
+
+    .title {
+        left: 10%;
+        margin-top: -25%;
+        font-size: 7.5em;
+        letter-spacing: 0.1em;
+        transform: none;
+    }
+
+    #about_content {
+        left: 7.5%;
+        top: 25%;
+        width: 85%;
+        height: 45%;
+    }
+
+    #about_content::after {
+        margin-top: -110px;
+    }
+
+    .pink_line.al3::after {
+        top: -18px;
+        width: 160px;
+        border-bottom: 20px solid #ffffff;
+        border-left: 20px solid transparent;
+    }
+
+    #about_num {
+        font-size: 6px;
+    }
+
+    #about_logo {
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    #info_event {
+        width: 50%;
+    }
+
+    #info_date {
+        width: 45%;
+    }
+
+    .date_s {
+        font-size: 32px;
+    }
+
+    .modal_btn {
+        left: 62%;
+        width: 120px;
+        height: 120px;
+    }
+
+    #side_bar {
+        display: none;
+    }
+
     #bar_content {
         width: 45%;
     }
